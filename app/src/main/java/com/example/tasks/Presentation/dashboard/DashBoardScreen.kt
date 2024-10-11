@@ -16,10 +16,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tasks.Presentation.dashboard.componants.CountCard
+import com.example.tasks.Presentation.dashboard.componants.TaskComponant
+import com.example.tasks.core.models.Task
 
 
 @Composable
 fun DashBoardScreen() {
+
+    val tasks = listOf(
+        Task(title = "task 1", color = Task.colors[0]),
+        Task(title = "task 1", color = Task.colors[0]),
+        Task(title = "task 1", color = Task.colors[0]),
+        Task(title = "task 1", color = Task.colors[0]),
+    )
     Scaffold(
         topBar = { TopBar() },
 
@@ -31,7 +40,9 @@ fun DashBoardScreen() {
                     completedTasks = "12",
                     totalTasks = "24",
                     activeTasks = "12",
-                    modifier = Modifier)
+                    modifier = Modifier
+                )
+                TaskComponant(tasks = tasks, modifier = Modifier)
             }
         }
 
@@ -54,11 +65,11 @@ private fun TopBar() {
 @Composable
 fun CountsCardSection(
     modifier: Modifier,
-    totalTasks : String,
-    completedTasks : String,
-    activeTasks : String,
+    totalTasks: String,
+    completedTasks: String,
+    activeTasks: String,
 
-) {
+    ) {
 
     Row {
         Spacer(modifier = Modifier.width(12.dp))
