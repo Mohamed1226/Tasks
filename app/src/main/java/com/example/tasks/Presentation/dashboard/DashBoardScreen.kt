@@ -1,8 +1,12 @@
 package com.example.tasks.Presentation.dashboard
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -10,6 +14,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.tasks.Presentation.dashboard.componants.CountCard
 
 
 @Composable
@@ -17,8 +23,17 @@ fun DashBoardScreen() {
     Scaffold(
         topBar = { TopBar() },
 
+
         ) { paddingValues: PaddingValues ->
-        LazyColumn(modifier = Modifier.padding(paddingValues)) { }
+        LazyColumn(modifier = Modifier.padding(paddingValues)) {
+            item {
+                CountsCardSection(
+                    completedTasks = "12",
+                    totalTasks = "24",
+                    activeTasks = "12",
+                    modifier = Modifier)
+            }
+        }
 
     }
 }
@@ -34,4 +49,24 @@ private fun TopBar() {
         },
 
         )
+}
+
+@Composable
+fun CountsCardSection(
+    modifier: Modifier,
+    totalTasks : String,
+    completedTasks : String,
+    activeTasks : String,
+
+) {
+
+    Row {
+        Spacer(modifier = Modifier.width(12.dp))
+        CountCard(title = "Total Tasks", count = totalTasks, modifier = modifier.weight(1f))
+        Spacer(modifier = Modifier.width(12.dp))
+        CountCard(title = "Completed Tasks", count = completedTasks, modifier = modifier.weight(1f))
+        Spacer(modifier = Modifier.width(12.dp))
+        CountCard(title = "Active Tasks", count = activeTasks, modifier = modifier.weight(1f))
+        Spacer(modifier = Modifier.width(12.dp))
+    }
 }
