@@ -1,6 +1,5 @@
-package com.example.tasks.ui.theme
+package com.example.tasks.Presentation.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
