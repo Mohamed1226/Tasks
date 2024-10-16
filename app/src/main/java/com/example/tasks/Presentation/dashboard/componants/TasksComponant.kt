@@ -1,5 +1,6 @@
 package com.example.tasks.Presentation.dashboard.componants
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,7 +27,7 @@ import com.example.tasks.core.models.Task
 
 
 @Composable
-fun TaskComponant(modifier: Modifier, tasks: List<Task>) {
+fun TaskComponant(showAddButton : Boolean = false,title: String,drawable: Int,modifier: Modifier, tasks: List<Task>) {
 
     Column(
         modifier = modifier
@@ -34,14 +35,15 @@ fun TaskComponant(modifier: Modifier, tasks: List<Task>) {
             .padding(12.dp)
     ) {
         Row(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier.fillMaxSize().padding(bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                "Tasks",
+                title,
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = 30.sp)
             )
+            if(showAddButton)
             IconButton(onClick = {}) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
             }
@@ -49,13 +51,13 @@ fun TaskComponant(modifier: Modifier, tasks: List<Task>) {
         }
         if (tasks.isEmpty()) {
             Image(
-                painter = painterResource(id = R.drawable.img_books), contentDescription = "",
+                painter = painterResource(id = drawable), contentDescription = "",
                 modifier = modifier
                     .align(Alignment.CenterHorizontally)
                     .size(120.dp)
             )
             Text(
-                "You have not any tasks !!",
+                "You do not have any tasks !!",
                 modifier = modifier.fillMaxSize(),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
@@ -67,8 +69,9 @@ fun TaskComponant(modifier: Modifier, tasks: List<Task>) {
             ){
 
                 items(count = tasks.size) { index ->
-                    TaskUI(modifier = modifier, task = tasks[index], colors = tasks[index].color,
-                        onClicked = {}
+                    TaskUI(drawable = drawable,modifier = modifier, task = tasks[index], colors = tasks[index].color,
+                        onClicked = {},
+                        onStatusClicked = {}
                         )
                 }
             }
