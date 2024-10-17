@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tasks.Presentation.dashboard.DashBoardScreen
+import com.example.tasks.Presentation.task_details.TaskDetailsScreen
 import com.example.tasks.Presentation.theme.TasksTheme
 
 class MainActivity : ComponentActivity() {

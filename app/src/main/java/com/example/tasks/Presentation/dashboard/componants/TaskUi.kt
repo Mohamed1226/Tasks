@@ -24,16 +24,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tasks.Presentation.dashboard.factory.TaskColorFactory
-import com.example.tasks.Presentation.theme.md_theme_dark_primaryContainer
-import com.example.tasks.R
 import com.example.tasks.core.models.Task
 
 @Composable
 fun TaskUI(
     modifier: Modifier, task: Task,
     colors: List<Color>,
-    onClicked: (task : Task) -> Unit,
-    onStatusClicked: (task : Task) -> Unit,
+    onClicked: (task: Task) -> Unit,
+    onStatusClicked: (task: Task) -> Unit,
     drawable: Int
 ) {
     Box(
@@ -61,37 +59,38 @@ fun TaskUI(
 
             )
             Spacer(modifier = modifier.height(8.dp))
-                Text(
-                    task.title,
-                    modifier = modifier.fillMaxSize(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = modifier.height(4.dp))
-                Text(
-                    task.dueDate.toString(),
-                    modifier = modifier.fillMaxSize(),
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(modifier = modifier.height(4.dp))
-                Box(
-                    modifier = modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.background,
-                            shape = MaterialTheme.shapes.medium
-                        )
-                        .padding(4.dp).clickable { onStatusClicked(task) }
-
-                ) {
-                    Text(
-                        task.status.name,
-                        modifier = modifier.fillMaxSize(),
-                        color = TaskColorFactory.getStatusColor(task.status),
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center
+            Text(
+                task.title,
+                modifier = modifier.fillMaxSize(),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = modifier.height(4.dp))
+            Text(
+                task.dueDate.toString(),
+                modifier = modifier.fillMaxSize(),
+                style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = modifier.height(4.dp))
+            Box(
+                modifier = modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.background,
+                        shape = MaterialTheme.shapes.medium
                     )
-                }
+                    .padding(4.dp)
+                    .clickable { onStatusClicked(task) }
+
+            ) {
+                Text(
+                    task.status.name,
+                    modifier = modifier.fillMaxSize(),
+                    color = TaskColorFactory.getStatusColor(task.status),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+            }
 
 
             //   Checkbox(checked = task.isCompleted(),onCheckedChange = {})

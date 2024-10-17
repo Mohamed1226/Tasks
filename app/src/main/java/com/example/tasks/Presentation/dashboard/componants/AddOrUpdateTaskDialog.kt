@@ -96,7 +96,6 @@ fun AddOrUpdateTaskDialog(
                         label = "task Name",
                         isError = taskNameError != null && taskName.isNotBlank(),
                         supportingText = taskNameError.orEmpty(),
-                        keyboardType = KeyboardType.Text
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     AppTextField(
@@ -105,7 +104,6 @@ fun AddOrUpdateTaskDialog(
                         label = "Task description",
                         isError = taskDescriptionError != null && taskDescription.isNotBlank(),
                         supportingText = taskDescriptionError.orEmpty(),
-                        keyboardType = KeyboardType.Text
                     )
                 }
             },

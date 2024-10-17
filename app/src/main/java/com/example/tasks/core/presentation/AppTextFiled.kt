@@ -14,7 +14,7 @@ fun AppTextField(
     supportingText: String,
     isError: Boolean,
     onValueChange: (String) -> Unit,
-    keyboardType :KeyboardType
+    keyboardType :KeyboardType = KeyboardType.Text
 ) {
 
     OutlinedTextField(
