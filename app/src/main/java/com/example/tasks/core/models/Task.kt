@@ -13,7 +13,7 @@ data class Task(
     val color: List<Color>,
     val description: String = "",
     val dueDate: Long = 1234,
-    val status: TaskStatus = TaskStatus.Closed,
+    var status: TaskStatus = TaskStatus.Closed,
     val taskId: Int? = null
 
 
