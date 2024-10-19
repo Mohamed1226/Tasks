@@ -81,7 +81,7 @@ fun DashBoardScreen() {
     Scaffold(
         topBar = { TopBar() },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {}) {
+            ExtendedFloatingActionButton(onClick = {    isAddTaskDialogOpen = true}) {
                 if (isNotScrolling) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "")
                 }
