@@ -27,7 +27,7 @@ import com.example.tasks.core.models.Task
 
 
 @Composable
-fun TaskComponant(showAddButton : Boolean = false,title: String,drawable: Int,modifier: Modifier, tasks: List<Task>) {
+fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Unit,title: String,drawable: Int,modifier: Modifier, tasks: List<Task>) {
 
     Column(
         modifier = modifier
@@ -70,7 +70,7 @@ fun TaskComponant(showAddButton : Boolean = false,title: String,drawable: Int,mo
 
                 items(count = tasks.size) { index ->
                     TaskUI(drawable = drawable,modifier = modifier, task = tasks[index], colors = tasks[index].color,
-                        onClicked = {},
+                        onClicked = onClicked,
                         onStatusClicked = {}
                         )
                 }

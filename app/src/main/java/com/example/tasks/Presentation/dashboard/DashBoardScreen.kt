@@ -1,5 +1,6 @@
 package com.example.tasks.Presentation.dashboard
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,13 +32,27 @@ import androidx.compose.ui.unit.dp
 import com.example.tasks.Presentation.dashboard.componants.AddOrUpdateTaskDialog
 import com.example.tasks.Presentation.dashboard.componants.CountCard
 import com.example.tasks.Presentation.dashboard.componants.TaskComponant
+import com.example.tasks.Presentation.destinations.TaskDetailsScreenRouteDestination
+import com.example.tasks.Presentation.task_details.TaskId
 import com.example.tasks.R
 import com.example.tasks.core.models.Task
 import com.example.tasks.core.presentation.AppButton
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination(start = true)
+@Composable
+fun DashBoardScreenRoute(navigator: DestinationsNavigator) {
+    DashBoardScreen(onClicked = {task ->
+        Log.d("Task id is", task.taskId.toString())
+        val nav = TaskId(id = task.taskId!!)
+        navigator.navigate(TaskDetailsScreenRouteDestination(navArgs = nav))
+
+    })
+}
 
 @Composable
-fun DashBoardScreen() {
+private fun DashBoardScreen( onClicked: (task: Task) -> Unit) {
     var isAddTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
 
 
@@ -55,10 +70,10 @@ fun DashBoardScreen() {
 
 
     val tasks = listOf(
-        Task(title = "task 1", color = Task.colors[0]),
-        Task(title = "task 1", color = Task.colors[0]),
-        Task(title = "task 1", color = Task.colors[0]),
-        Task(title = "task 1", color = Task.colors[0]),
+        Task(taskId = 342, title = "task 1", color = Task.colors[0]),
+        Task(taskId = 342,title = "task 1", color = Task.colors[0]),
+        Task(taskId = 342,title = "task 1", color = Task.colors[0]),
+        Task(taskId = 342,title = "task 1", color = Task.colors[0]),
     )
 
 
@@ -81,7 +96,7 @@ fun DashBoardScreen() {
     Scaffold(
         topBar = { TopBar() },
         floatingActionButton = {
-            ExtendedFloatingActionButton(onClick = {    isAddTaskDialogOpen = true}) {
+            ExtendedFloatingActionButton(onClick = { isAddTaskDialogOpen = true }) {
                 if (isNotScrolling) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "")
                 }
@@ -114,7 +129,8 @@ fun DashBoardScreen() {
                     title = "Tasks",
                     drawable = R.drawable.img_tasks,
                     tasks = tasks,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onClicked = onClicked
                 )
             }
 
@@ -134,7 +150,9 @@ fun DashBoardScreen() {
                     title = "Upcoming Tasks",
                     drawable = R.drawable.img_books,
                     tasks = tasks,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onClicked = onClicked
+
                 )
             }
             item {
@@ -142,7 +160,8 @@ fun DashBoardScreen() {
                     title = "Recent Tasks",
                     drawable = R.drawable.img_lamp,
                     tasks = tasks,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onClicked = onClicked
                 )
             }
             item {
@@ -150,7 +169,8 @@ fun DashBoardScreen() {
                     title = "Closed Tasks",
                     drawable = R.drawable.img_tasks,
                     tasks = tasks,
-                    modifier = Modifier
+                    modifier = Modifier,
+                    onClicked = onClicked
                 )
             }
         }

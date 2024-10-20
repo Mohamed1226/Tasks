@@ -18,11 +18,20 @@ import com.example.tasks.Presentation.dashboard.componants.DeleteTaskDialog
 import com.example.tasks.Presentation.task_details.componant.AppTopAppBar
 import com.example.tasks.Presentation.task_details.componant.TaskDetails
 import com.example.tasks.core.models.Task
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+
+data class TaskId(val id : Int)
 
 
+@Destination(navArgsDelegate = TaskId::class)
+@Composable
+fun TaskDetailsScreenRoute(navigator: DestinationsNavigator) {
+    TaskDetailsScreen(onBackButtonClick = {navigator.navigateUp()})
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDetailsScreen() {
+private fun TaskDetailsScreen( onBackButtonClick: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var isEditTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
@@ -60,7 +69,7 @@ fun TaskDetailsScreen() {
         topBar = {
             AppTopAppBar(
                 title = "state.subjectName",
-                onBackButtonClick = {},
+                onBackButtonClick = onBackButtonClick,
                 onDeleteButtonClick = {
                     isDeleteDialogOpen = true
                 },
