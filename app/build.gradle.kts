@@ -89,11 +89,16 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    /// nav controller
+    implementation (libs.androidx.hilt.navigation.compose)
+    val nav_version = "2.6.0"
+    //noinspection GradleDependency
+    implementation ("androidx.navigation:navigation-compose:$nav_version")
 //    //Dagger-Hilt
 //    implementation(libs.hilt.android.v248)
 //    ksp(libs.hilt.android.compiler.v248)
 //    ksp(libs.androidx.hilt.compiler)
-//    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     //fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.5.3")
