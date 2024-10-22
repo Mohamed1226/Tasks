@@ -184,7 +184,7 @@ private fun TopBar() {
 
     CenterAlignedTopAppBar(
         title = {
-            Text("Tasks", style = MaterialTheme.typography.displayMedium)
+            Text("Roaa Tasks", style = MaterialTheme.typography.displayMedium)
         },
     )
 }
