@@ -1,5 +1,6 @@
 package com.example.tasks.Presentation.dashboard
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -142,32 +143,64 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun editTask(taskId: Int) {
+        Log.d("taskId", taskId.toString())
+        Log.d("taskId", _state.value.status.name)
+
         viewModelScope.launch {
             val state = _state.value
+
             try {
-                taskRepo.editTask(
-                    task = Task(
+                val existingTask = taskRepo.getTaskById(taskId)
+                if (existingTask != null) {
+                    val updatedTask = existingTask.copy(
                         title = state.title,
                         description = state.description,
-                        dueDate = state.dueDate!!,
-                        color = state.color,
                         status = state.status,
-                        taskId = taskId
                     )
-                )
-                _snackbarEventFlow.emit(
-                    SnackbarEvent.ShowSnackbar(message = "Task Saved Successfully")
-                )
+                    val rowsUpdated = taskRepo.editTask(updatedTask)
+                    if (rowsUpdated > 0) {
+                        Log.d("TaskDao", "Task updated successfully.")
+                    } else {
+                        Log.e("TaskDao", "Task update failed. No matching row found.")
+                    }
+                } else {
+                    Log.e("TaskDao", "Task with ID: $taskId not found.")
+                }
+//                taskRepo.editTask(
+//                    task = Task(
+//                        title = state.title,
+//                        description = state.description,
+//                        dueDate = state.dueDate!!,
+//                        color = state.color,
+//                        status = state.status,
+//                        taskId = taskId
+//                    )
+//                )
+
+                // Switch back to Main dispatcher to update the UI
+                withContext(Dispatchers.Main) {
+                    _snackbarEventFlow.emit(
+                        SnackbarEvent.ShowSnackbar(message = "Task Saved Successfully")
+                    )
+                    _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
+                }
                 _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
             } catch (e: Exception) {
-                _snackbarEventFlow.emit(
-                    SnackbarEvent.ShowSnackbar(
-                        message = "Couldn't save task. ${e.message}",
-                        duration = SnackbarDuration.Long
+
+                // Switch back to Main dispatcher to update the UI
+                withContext(Dispatchers.Main) {
+                    _snackbarEventFlow.emit(
+                        SnackbarEvent.ShowSnackbar(
+                            message = "Couldn't save task. ${e.message}",
+                            duration = SnackbarDuration.Long
+                        )
                     )
-                )
+                    _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
+                }
             }
+
         }
+
     }
 }
 

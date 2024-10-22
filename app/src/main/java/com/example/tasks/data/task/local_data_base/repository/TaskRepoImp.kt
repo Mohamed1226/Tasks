@@ -23,7 +23,7 @@ class TaskRepoImp @Inject constructor(private val taskDao: TaskDao) : TaskRepo {
         return   taskDao.getAllTasks()
     }
 
-    override suspend fun editTask(task: Task) {
-        taskDao.editTask(task)
+    override suspend fun editTask(task: Task) :Int{
+       return taskDao.editTask(task)
     }
 }

@@ -112,9 +112,9 @@ private fun DashBoardScreen(
         ) {
             item {
                 CountsCardSection(
-                    completedTasks = "12",
+                    completedTasks = taskState.closedTasks.size.toString(),
                     totalTasks = taskState.tasks.size.toString(),
-                    activeTasks = "12",
+                    activeTasks = taskState.recentTasks.size.toString(),
                     modifier = Modifier
                 )
 
@@ -147,7 +147,8 @@ private fun DashBoardScreen(
                     drawable = R.drawable.img_books,
                     tasks = taskState.upComingTasks,
                     modifier = Modifier,
-                    onClicked = onClicked
+                    onClicked = onClicked,
+                    onEvent = onEvent
 
                 )
             }
@@ -157,7 +158,8 @@ private fun DashBoardScreen(
                     drawable = R.drawable.img_lamp,
                     tasks = taskState.recentTasks,
                     modifier = Modifier,
-                    onClicked = onClicked
+                    onClicked = onClicked,
+                    onEvent = onEvent
                 )
             }
             item {
@@ -166,7 +168,8 @@ private fun DashBoardScreen(
                     drawable = R.drawable.img_tasks,
                     tasks = taskState.closedTasks,
                     modifier = Modifier,
-                    onClicked = onClicked
+                    onClicked = onClicked,
+                    onEvent = onEvent
                 )
             }
         }

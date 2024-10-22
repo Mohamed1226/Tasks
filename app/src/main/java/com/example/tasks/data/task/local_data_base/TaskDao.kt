@@ -24,7 +24,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM Task")
     fun getAllTasks(): Flow<List<Task>>
-    // Add the editTask method using @Update
+
     @Update
-    suspend fun editTask(task: Task)
+    suspend fun editTask(task: Task): Int
 }

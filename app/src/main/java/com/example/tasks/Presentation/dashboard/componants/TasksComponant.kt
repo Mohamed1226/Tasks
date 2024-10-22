@@ -23,12 +23,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.tasks.Presentation.dashboard.TaskEvent
 import com.example.tasks.R
 import com.example.tasks.core.models.Task
 
 
 @Composable
-fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Unit,title: String,drawable: Int,modifier: Modifier, tasks: List<Task>) {
+fun TaskComponant(
+    onEvent: (TaskEvent) -> Unit,
+    showAddButton: Boolean = false,
+    onClicked: (task: Task) -> Unit,
+    title: String,
+    drawable: Int,
+    modifier: Modifier,
+    tasks: List<Task>
+) {
 
     Column(
         modifier = modifier
@@ -36,7 +45,9 @@ fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Un
             .padding(12.dp)
     ) {
         Row(
-            modifier = modifier.fillMaxSize().padding(bottom = 12.dp),
+            modifier = modifier
+                .fillMaxSize()
+                .padding(bottom = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -44,10 +55,10 @@ fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Un
                 title,
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = 30.sp)
             )
-            if(showAddButton)
-            IconButton(onClick = {}) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-            }
+            if (showAddButton)
+                IconButton(onClick = {}) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                }
 
         }
         if (tasks.isEmpty()) {
@@ -64,16 +75,22 @@ fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Un
                 textAlign = TextAlign.Center
             )
         } else {
-            LazyRow (
+            LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = modifier.padding(start = 12.dp, end = 12.dp)
-            ){
+            ) {
 
                 items(count = tasks.size) { index ->
-                    TaskUI(drawable = drawable,modifier = modifier, task = tasks[index], colors = tasks[index].color.map { Color(it) },
+                    TaskUI(drawable = drawable,
+                        modifier = modifier,
+                        task = tasks[index],
+                        colors = tasks[index].color.map { Color(it) },
                         onClicked = onClicked,
-                        onStatusClicked = {}
-                        )
+                        onStatusClicked = {
+                            onEvent(TaskEvent.OnStatusChange(it))
+                            onEvent(TaskEvent.EditTask(tasks[index].taskId!!))
+                        }
+                    )
                 }
             }
         }
