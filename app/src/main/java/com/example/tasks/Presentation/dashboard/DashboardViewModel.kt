@@ -3,6 +3,7 @@ package com.example.tasks.Presentation.dashboard
 import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.tasks.core.enums.TaskStatus
 import com.example.tasks.core.models.Task
 import com.example.tasks.core.repos.task.TaskRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,13 @@ class DashboardViewModel @Inject constructor(
         _state,
         taskRepo.getAllTasks()
     ) { state, tasks ->
-        state.copy(tasks = tasks)
+
+        state.copy(
+            tasks = tasks,
+            recentTasks = tasks.filter { it.status == TaskStatus.Recent },
+            closedTasks = tasks.filter { it.status == TaskStatus.Closed },
+            upComingTasks = tasks.filter { it.status == TaskStatus.UpComing },
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
@@ -73,6 +80,7 @@ class DashboardViewModel @Inject constructor(
 
             is TaskEvent.DeleteTask -> deleteTask()
             is TaskEvent.SaveTask -> saveTask()
+            is TaskEvent.EditTask -> editTask(event.id)
         }
     }
 
@@ -133,7 +141,34 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-
+    private fun editTask(taskId: Int) {
+        viewModelScope.launch {
+            val state = _state.value
+            try {
+                taskRepo.editTask(
+                    task = Task(
+                        title = state.title,
+                        description = state.description,
+                        dueDate = state.dueDate!!,
+                        color = state.color,
+                        status = state.status,
+                        taskId = taskId
+                    )
+                )
+                _snackbarEventFlow.emit(
+                    SnackbarEvent.ShowSnackbar(message = "Task Saved Successfully")
+                )
+                _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackbarEvent.ShowSnackbar(
+                        message = "Couldn't save task. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
 }
 
 

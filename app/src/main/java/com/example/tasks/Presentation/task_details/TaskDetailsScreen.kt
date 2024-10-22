@@ -29,11 +29,12 @@ data class TaskId(val id : Int)
 @Destination(navArgsDelegate = TaskId::class)
 @Composable
 fun TaskDetailsScreenRoute(navigator: DestinationsNavigator) {
-    TaskDetailsScreen(onBackButtonClick = {navigator.navigateUp()})
+    TaskDetailsScreen(onBackButtonClick = { navigator.navigateUp() })
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TaskDetailsScreen( onBackButtonClick: () -> Unit) {
+private fun TaskDetailsScreen(onBackButtonClick: () -> Unit) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var isEditTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
     var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }

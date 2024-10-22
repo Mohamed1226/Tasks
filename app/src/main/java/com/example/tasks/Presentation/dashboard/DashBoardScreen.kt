@@ -51,7 +51,7 @@ fun DashBoardScreenRoute(navigator: DestinationsNavigator) {
     val state by viewmodel.state.collectAsState()
     DashBoardScreen(onClicked = { task ->
         Log.d("Task id is", task.taskId.toString())
-        val nav = TaskId(id = 23)
+        val nav = TaskId(id = task.taskId!!)
         navigator.navigate(TaskDetailsScreenRouteDestination(navArgs = nav))
 
     }, taskState = state, onEvent = viewmodel::onEvent)
@@ -119,16 +119,16 @@ private fun DashBoardScreen(
                 )
 
             }
-            item {
-                TaskComponant(
-                   // showAddButton = true,
-                    title = "Tasks",
-                    drawable = R.drawable.img_tasks,
-                    tasks = taskState.tasks,
-                    modifier = Modifier,
-                    onClicked = onClicked
-                )
-            }
+//            item {
+//                TaskComponant(
+//                   // showAddButton = true,
+//                    title = "Tasks",
+//                    drawable = R.drawable.img_tasks,
+//                    tasks = taskState.tasks,
+//                    modifier = Modifier,
+//                    onClicked = onClicked
+//                )
+//            }
 
             item {
                 AppButton(
@@ -145,7 +145,7 @@ private fun DashBoardScreen(
                 TaskComponant(
                     title = "Upcoming Tasks",
                     drawable = R.drawable.img_books,
-                    tasks = taskState.tasks,
+                    tasks = taskState.upComingTasks,
                     modifier = Modifier,
                     onClicked = onClicked
 
@@ -155,7 +155,7 @@ private fun DashBoardScreen(
                 TaskComponant(
                     title = "Recent Tasks",
                     drawable = R.drawable.img_lamp,
-                    tasks = taskState.tasks,
+                    tasks = taskState.recentTasks,
                     modifier = Modifier,
                     onClicked = onClicked
                 )
@@ -164,7 +164,7 @@ private fun DashBoardScreen(
                 TaskComponant(
                     title = "Closed Tasks",
                     drawable = R.drawable.img_tasks,
-                    tasks = taskState.tasks,
+                    tasks = taskState.closedTasks,
                     modifier = Modifier,
                     onClicked = onClicked
                 )

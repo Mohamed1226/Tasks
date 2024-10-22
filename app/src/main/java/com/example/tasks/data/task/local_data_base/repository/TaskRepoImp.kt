@@ -22,4 +22,8 @@ class TaskRepoImp @Inject constructor(private val taskDao: TaskDao) : TaskRepo {
     override fun getAllTasks(): Flow<List<Task>> {
         return   taskDao.getAllTasks()
     }
+
+    override suspend fun editTask(task: Task) {
+        taskDao.editTask(task)
+    }
 }

@@ -4,6 +4,7 @@ package com.example.tasks.data.task.local_data_base
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import com.example.tasks.core.models.Task
 import kotlinx.coroutines.flow.Flow
@@ -23,4 +24,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM Task")
     fun getAllTasks(): Flow<List<Task>>
+    // Add the editTask method using @Update
+    @Update
+    suspend fun editTask(task: Task)
 }

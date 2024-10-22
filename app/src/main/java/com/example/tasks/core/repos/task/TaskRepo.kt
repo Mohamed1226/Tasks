@@ -13,4 +13,6 @@ interface TaskRepo {
     suspend fun getTaskById(taskId: Int): Task?
 
     fun getAllTasks(): Flow<List<Task>>
+
+    suspend fun editTask(task: Task)
 }
