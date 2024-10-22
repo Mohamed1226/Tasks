@@ -79,37 +79,8 @@ class DashboardViewModel @Inject constructor(
                 }
             }
 
-            is TaskEvent.DeleteTask -> deleteTask()
             is TaskEvent.SaveTask -> saveTask()
             is TaskEvent.EditTask -> editTask(event.id)
-        }
-    }
-
-    private fun deleteTask() {
-        viewModelScope.launch {
-            try {
-                val currentTaskId = state.value.taskId
-                if (currentTaskId != null) {
-                    withContext(Dispatchers.IO) {
-                        taskRepo.deleteTask(taskId = currentTaskId)
-                    }
-                    _snackbarEventFlow.emit(
-                        SnackbarEvent.ShowSnackbar(message = "Task deleted successfully")
-                    )
-                    _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
-                } else {
-                    _snackbarEventFlow.emit(
-                        SnackbarEvent.ShowSnackbar(message = "No Task to delete")
-                    )
-                }
-            } catch (e: Exception) {
-                _snackbarEventFlow.emit(
-                    SnackbarEvent.ShowSnackbar(
-                        message = "Couldn't delete task. ${e.message}",
-                        duration = SnackbarDuration.Long
-                    )
-                )
-            }
         }
     }
 
@@ -127,6 +98,9 @@ class DashboardViewModel @Inject constructor(
                         taskId = state.taskId
                     )
                 )
+                _state.update {
+                    TaskState()
+                }
                 _snackbarEventFlow.emit(
                     SnackbarEvent.ShowSnackbar(message = "Task Saved Successfully")
                 )
