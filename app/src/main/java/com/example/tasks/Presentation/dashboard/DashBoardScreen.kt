@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +29,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.tasks.Presentation.dashboard.componants.AddOrUpdateTaskDialog
@@ -44,17 +47,22 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @Destination(start = true)
 @Composable
 fun DashBoardScreenRoute(navigator: DestinationsNavigator) {
-    val viewmodel : DashboardViewModel = hiltViewModel()
-    DashBoardScreen(onClicked = {task ->
+    val viewmodel: DashboardViewModel = hiltViewModel()
+    val state by viewmodel.state.collectAsState()
+    DashBoardScreen(onClicked = { task ->
         Log.d("Task id is", task.taskId.toString())
-        val nav = TaskId(id = task.taskId!!)
+        val nav = TaskId(id = 23)
         navigator.navigate(TaskDetailsScreenRouteDestination(navArgs = nav))
 
-    },viewmodel)
+    }, taskState = state, onEvent = viewmodel::onEvent)
 }
 
 @Composable
-private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel: DashboardViewModel) {
+private fun DashBoardScreen(
+    onClicked: (task: Task) -> Unit,
+    taskState: TaskState,
+    onEvent: (TaskEvent) -> Unit
+) {
     var isAddTaskDialogOpen by rememberSaveable { mutableStateOf(false) }
 
 
@@ -66,25 +74,17 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
     }
 
 
-    var name by rememberSaveable { mutableStateOf("") }
-    var selectedColor by rememberSaveable { mutableStateOf(Task.colors[0]) }
-    var desc by rememberSaveable { mutableStateOf("") }
-
-
-
-
-
     AddOrUpdateTaskDialog(
         isOpen = isAddTaskDialogOpen,
-        taskName = name,
-        taskDescription = desc,
-        selectedColors = selectedColor,
-        onTaskNameChange = { name = it },
-        onTaskDescriptionChange = { desc = it },
-        onColorChange = { selectedColor = it },
+        taskName = taskState.title,
+        taskDescription = taskState.description,
+        selectedColors = taskState.color.map { Color(it) },
+        onTaskNameChange = { onEvent(TaskEvent.OnTitleChange(it)) },
+        onTaskDescriptionChange = { onEvent(TaskEvent.OnDescriptionChange(it)) },
+        onColorChange = { onEvent(TaskEvent.OnColorChange(it.map { it.toArgb() })) },
         onDismissRequest = { isAddTaskDialogOpen = false },
         onConfirmButtonClick = {
-            /// add or update function
+            onEvent(TaskEvent.SaveTask)
             isAddTaskDialogOpen = false
         }
     )
@@ -113,7 +113,7 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
             item {
                 CountsCardSection(
                     completedTasks = "12",
-                    totalTasks = "24",
+                    totalTasks = taskState.tasks.size.toString(),
                     activeTasks = "12",
                     modifier = Modifier
                 )
@@ -121,10 +121,10 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
             }
             item {
                 TaskComponant(
-                    showAddButton = true,
+                   // showAddButton = true,
                     title = "Tasks",
                     drawable = R.drawable.img_tasks,
-                    tasks = dashboardViewModel.tasks,
+                    tasks = taskState.tasks,
                     modifier = Modifier,
                     onClicked = onClicked
                 )
@@ -138,14 +138,14 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(12.dp),
-                    title = "Start Task"
+                    title = "Add Task"
                 )
             }
             item {
                 TaskComponant(
                     title = "Upcoming Tasks",
                     drawable = R.drawable.img_books,
-                    tasks = dashboardViewModel.tasks,
+                    tasks = taskState.tasks,
                     modifier = Modifier,
                     onClicked = onClicked
 
@@ -155,7 +155,7 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
                 TaskComponant(
                     title = "Recent Tasks",
                     drawable = R.drawable.img_lamp,
-                    tasks = dashboardViewModel.tasks,
+                    tasks = taskState.tasks,
                     modifier = Modifier,
                     onClicked = onClicked
                 )
@@ -164,7 +164,7 @@ private fun DashBoardScreen( onClicked: (task: Task) -> Unit,dashboardViewModel:
                 TaskComponant(
                     title = "Closed Tasks",
                     drawable = R.drawable.img_tasks,
-                    tasks = dashboardViewModel.tasks,
+                    tasks = taskState.tasks,
                     modifier = Modifier,
                     onClicked = onClicked
                 )

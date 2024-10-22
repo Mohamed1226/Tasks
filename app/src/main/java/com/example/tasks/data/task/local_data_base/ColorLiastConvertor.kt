@@ -10,7 +10,17 @@ class ColorListConverter {
     }
 
     @TypeConverter
-    fun toColorList(colorListString: String): List<Int> {
-        return colorListString.split(",").map { it.toInt() }
+    fun toColorList(colorString: String): List<Int> {
+        if (colorString.isEmpty()) {
+            return emptyList()
+        }
+
+        return colorString.split(",").mapNotNull {
+            try {
+                it.toInt()
+            } catch (e: NumberFormatException) {
+                null // Ignore invalid numbers
+            }
+        }
     }
 }

@@ -164,7 +164,7 @@ fun AddOrUpdateTaskDialog(
             confirmButton = {
                 TextButton(
                     onClick = onConfirmButtonClick,
-                    enabled = taskNameError == null && taskDescriptionError == null
+                    enabled = taskNameError == null && taskDescriptionError == null && selectedColors.isNotEmpty()
                 ) {
                     Text(text = "Save")
                 }

@@ -1,22 +1,147 @@
 package com.example.tasks.Presentation.dashboard
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.tasks.core.models.Task
 import com.example.tasks.core.repos.task.TaskRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(private val taskRepo: TaskRepo) : ViewModel() {
+class DashboardViewModel @Inject constructor(
+    private val taskRepo: TaskRepo,
+) : ViewModel() {
 
 
-    val tasks = listOf(
-        Task(taskId = 342, title = "task 1", color = Task.colors[0].map { it.toArgb() }, description = "dsfs", dueDate = 234),
-        Task(taskId = 342,title = "task 1", color = Task.colors[0].map { it.toArgb() }, description = "dsfs", dueDate = 234),
-        Task(taskId = 342,title = "task 1", color = Task.colors[0].map { it.toArgb() }, description = "dsfs", dueDate = 234),
-        Task(taskId = 342,title = "task 1", color = Task.colors[0].map { it.toArgb() }, description = "dsfs", dueDate = 234),
+    private val _state = MutableStateFlow(TaskState())
+    val state = combine(
+        _state,
+        taskRepo.getAllTasks()
+    ) { state, tasks ->
+        state.copy(tasks = tasks)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5000),
+        initialValue = TaskState()
     )
 
+    private val _snackbarEventFlow = MutableSharedFlow<SnackbarEvent>()
+
+
+    fun onEvent(event: TaskEvent) {
+        when (event) {
+            is TaskEvent.OnTitleChange -> {
+                _state.update {
+                    it.copy(title = event.title)
+                }
+            }
+
+            is TaskEvent.OnDescriptionChange -> {
+                _state.update {
+                    it.copy(description = event.description)
+                }
+            }
+
+            is TaskEvent.OnDateChange -> {
+                _state.update {
+                    it.copy(dueDate = event.millis)
+                }
+            }
+
+            is TaskEvent.OnStatusChange -> {
+                _state.update {
+                    it.copy(status = event.status)
+                }
+            }
+
+            is TaskEvent.OnColorChange -> {
+                _state.update {
+                    it.copy(color = event.color)
+                }
+            }
+
+            is TaskEvent.DeleteTask -> deleteTask()
+            is TaskEvent.SaveTask -> saveTask()
+        }
+    }
+
+    private fun deleteTask() {
+        viewModelScope.launch {
+            try {
+                val currentTaskId = state.value.taskId
+                if (currentTaskId != null) {
+                    withContext(Dispatchers.IO) {
+                        taskRepo.deleteTask(taskId = currentTaskId)
+                    }
+                    _snackbarEventFlow.emit(
+                        SnackbarEvent.ShowSnackbar(message = "Task deleted successfully")
+                    )
+                    _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
+                } else {
+                    _snackbarEventFlow.emit(
+                        SnackbarEvent.ShowSnackbar(message = "No Task to delete")
+                    )
+                }
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackbarEvent.ShowSnackbar(
+                        message = "Couldn't delete task. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
+
+    private fun saveTask() {
+        viewModelScope.launch {
+            val state = _state.value
+            try {
+                taskRepo.upsertTask(
+                    task = Task(
+                        title = state.title,
+                        description = state.description,
+                        dueDate = state.dueDate ?: Instant.now().toEpochMilli(),
+                        color = state.color,
+                        status = state.status,
+                        taskId = state.taskId
+                    )
+                )
+                _snackbarEventFlow.emit(
+                    SnackbarEvent.ShowSnackbar(message = "Task Saved Successfully")
+                )
+                _snackbarEventFlow.emit(SnackbarEvent.NavigateUp)
+            } catch (e: Exception) {
+                _snackbarEventFlow.emit(
+                    SnackbarEvent.ShowSnackbar(
+                        message = "Couldn't save task. ${e.message}",
+                        duration = SnackbarDuration.Long
+                    )
+                )
+            }
+        }
+    }
+
+
+}
+
+
+sealed class SnackbarEvent {
+    data class ShowSnackbar(
+        val message: String,
+        val duration: SnackbarDuration = SnackbarDuration.Short
+    ) : SnackbarEvent()
+
+    data object NavigateUp : SnackbarEvent()
 }
