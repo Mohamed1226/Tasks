@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -69,7 +70,7 @@ fun TaskComponant(showAddButton : Boolean = false, onClicked: (task: Task) -> Un
             ){
 
                 items(count = tasks.size) { index ->
-                    TaskUI(drawable = drawable,modifier = modifier, task = tasks[index], colors = tasks[index].color,
+                    TaskUI(drawable = drawable,modifier = modifier, task = tasks[index], colors = tasks[index].color.map { Color(it) },
                         onClicked = onClicked,
                         onStatusClicked = {}
                         )

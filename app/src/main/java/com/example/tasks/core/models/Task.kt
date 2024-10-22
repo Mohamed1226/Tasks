@@ -13,7 +13,7 @@ import com.example.tasks.core.enums.TaskStatus
 @Entity
 data class Task(
     val title: String,
-    val color: List<Color>,
+    val color: List<Int>,
     val description: String,
     val dueDate: Long,
     var status: TaskStatus = TaskStatus.Recent,

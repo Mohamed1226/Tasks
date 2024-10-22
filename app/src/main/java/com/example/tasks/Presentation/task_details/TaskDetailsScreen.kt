@@ -12,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.example.tasks.Presentation.dashboard.componants.AddOrUpdateTaskDialog
 import com.example.tasks.Presentation.dashboard.componants.DeleteTaskDialog
@@ -90,7 +92,8 @@ private fun TaskDetailsScreen( onBackButtonClick: () -> Unit) {
                     task = Task(
                         title = "task 1",
                         description = "Hello dsfdsklmfcxmcvxmcv mfdvkfdkj; ;klfdgvkfkdf l;kfdgjfdkljfd",
-                        color = Task.colors[0]
+                        color = Task.colors[0].map { it.toArgb() },
+                        dueDate = 54
                     ),
                     modifier = Modifier,
                     onStatusClicked = { task -> })
