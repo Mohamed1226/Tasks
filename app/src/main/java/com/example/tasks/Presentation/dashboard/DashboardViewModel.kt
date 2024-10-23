@@ -80,7 +80,7 @@ class DashboardViewModel @Inject constructor(
             }
 
             is TaskEvent.SaveTask -> saveTask()
-            is TaskEvent.EditTask -> editTask(event.id)
+            is TaskEvent.EditTask -> updateStatus(event.id)
         }
     }
 
@@ -116,7 +116,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun editTask(taskId: Int) {
+    private fun updateStatus(taskId: Int) {
         Log.d("taskId", taskId.toString())
         Log.d("taskId", _state.value.status.name)
 
@@ -127,13 +127,14 @@ class DashboardViewModel @Inject constructor(
                 val existingTask = taskRepo.getTaskById(taskId)
                 if (existingTask != null) {
                     val updatedTask = existingTask.copy(
-                        title = state.title,
-                        description = state.description,
                         status = state.status,
                     )
                     val rowsUpdated = taskRepo.editTask(updatedTask)
                     if (rowsUpdated > 0) {
                         Log.d("TaskDao", "Task updated successfully.")
+                        _state.update {
+                            TaskState()
+                        }
                     } else {
                         Log.e("TaskDao", "Task update failed. No matching row found.")
                     }
