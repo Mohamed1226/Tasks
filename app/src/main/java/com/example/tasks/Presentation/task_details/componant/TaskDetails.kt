@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tasks.Presentation.dashboard.factory.TaskColorFactory
+import com.example.tasks.core.common.AppDateFormatter
 import com.example.tasks.core.enums.TaskStatus
 import com.example.tasks.core.models.Task
 
@@ -24,7 +25,7 @@ fun TaskDetails(task: Task, modifier: Modifier, onStatusClicked: (TaskStatus) ->
     Column(modifier = modifier.padding(horizontal = 24.dp)) {
         Text(task.description, maxLines = 8, style = MaterialTheme.typography.labelLarge)
         Spacer(modifier = modifier.height(12.dp))
-        Text(task.dueDate.toString(), maxLines = 8, style = MaterialTheme.typography.labelLarge)
+        Text(  AppDateFormatter().convertMillisToDate(task.dueDate).toString(), maxLines = 8, style = MaterialTheme.typography.labelLarge)
         Spacer(modifier = modifier.height(12.dp))
         TaskStatusComponant(
             task = task,

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.tasks.Presentation.task_details.componant.TaskStatusComponant
+import com.example.tasks.core.common.AppDateFormatter
 import com.example.tasks.core.enums.TaskStatus
 import com.example.tasks.core.models.Task
 
@@ -38,7 +39,8 @@ fun TaskUI(
     Box(
         modifier = modifier
             .clickable {
-                onClicked(task) }
+                onClicked(task)
+            }
             .fillMaxWidth()
             .background(
                 brush = Brush.verticalGradient(colors),
@@ -69,7 +71,7 @@ fun TaskUI(
             )
             Spacer(modifier = modifier.height(4.dp))
             Text(
-                task.dueDate.toString(),
+                AppDateFormatter().convertMillisToDate(task.dueDate).toString(),
                 modifier = modifier.fillMaxSize(),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
